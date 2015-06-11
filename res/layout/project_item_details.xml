@@ -1,0 +1,543 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <ScrollView
+        android:id="@+id/scroll_details"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFDDCC"
+        android:paddingBottom="10dp"
+        android:paddingEnd="10dip"
+        android:paddingStart="10dip" >
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" >
+
+            <!-- For showing Images about project -->
+
+            <android.support.v4.view.ViewPager
+                android:id="@+id/image_pager"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/style_layouts" />
+            <!-- For showing  basic details of project like name and locatility and city etc..start -->
+
+            <RelativeLayout
+                android:id="@+id/address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/image_pager"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/style_layouts"
+                android:paddingEnd="5dip"
+                android:paddingStart="5dip" >
+
+                <TextView
+                    android:id="@+id/project_name1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginTop="5dip"
+                    android:text="Project name"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/add_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/project_name1"
+                    android:layout_marginBottom="5dip"
+                    android:text="Dr.Bakthavachalam Road,Chennai" />
+            </RelativeLayout>
+            <!-- For showing  basic details of project like name and locatility and city etc..end -->
+
+
+            <!-- For showing  key details of project like price  and area and city and possession etc..start -->
+
+            <LinearLayout
+                android:id="@+id/key_info"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/address"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/style_layouts"
+                android:orientation="vertical"
+                android:paddingBottom="5dip"
+                android:paddingEnd="5dip"
+                android:paddingStart="5dip" >
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginTop="5dip" >
+
+                    <TextView
+                        android:id="@+id/key_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingEnd="5dip"
+                        android:paddingStart="5dip"
+                        android:text="Key information"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:paddingEnd="5dip"
+                    android:paddingStart="5dip" >
+
+                    <TableRow
+                        android:id="@+id/firstRowNames"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/propertyType"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="PropertyType" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/cityname"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="City" >
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/firstRowValues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/firstRowNames" >
+
+                        <TextView
+                            android:id="@+id/property_type_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Apartments" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/city_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:text="Chennai" >
+                        </TextView>
+                    </TableRow>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:paddingEnd="5dip"
+                    android:paddingStart="5dip" >
+
+                    <TableRow
+                        android:id="@+id/secondRowNames"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/availableUnits"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Available Units" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/blocks"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Blocks" >
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/secondRowValues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/secondRowNames" >
+
+                        <TextView
+                            android:id="@+id/availableunitsvalue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="100" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/blocks_value"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:text="10" >
+                        </TextView>
+                    </TableRow>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:paddingEnd="5dip"
+                    android:paddingStart="5dip" >
+
+                    <TableRow
+                        android:id="@+id/thirdRowNames"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/status"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Status" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/possesion"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Possesion By" >
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/thirdRowValues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/thirdRowNames" >
+
+                        <TextView
+                            android:id="@+id/statusValue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Under Construction" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/possesionDate"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:text="August 2015" >
+                        </TextView>
+                    </TableRow>
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="5dip"
+                    android:paddingEnd="5dip"
+                    android:paddingStart="5dip" >
+
+                    <TableRow
+                        android:id="@+id/fourthRowNames"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content" >
+
+                        <TextView
+                            android:id="@+id/priceperunit"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Price/Unit" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/coveredArea"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="Covered Area(Sqft)" >
+                        </TextView>
+                    </TableRow>
+
+                    <TableRow
+                        android:id="@+id/fourthRowValues"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_below="@id/fourthRowNames" >
+
+                        <TextView
+                            android:id="@+id/priceperunitvalue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:text="2000-3000" >
+                        </TextView>
+
+                        <TextView
+                            android:id="@+id/coveredAreaValue"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_horizontal"
+                            android:layout_weight="1"
+                            android:text="3500 -4500" >
+                        </TextView>
+                    </TableRow>
+                </RelativeLayout>
+            </LinearLayout>
+            <!-- For showing  key details of project like price  and area and city and possession etc..end -->
+
+
+            <!-- For showing  amenties of this project start -->
+
+            <RelativeLayout
+                android:id="@+id/amenties"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/key_info"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/style_layouts"
+                android:paddingEnd="10dip"
+                android:paddingStart="10dip" >
+
+                <TextView
+                    android:id="@+id/aminitiesText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Amenities"
+                    android:textSize="16sp"
+                    android:textStyle="bold" >
+                </TextView>
+                <!-- Need to add amenties at dynamic time, inflate into amenities_layout -->
+
+                <HorizontalScrollView
+                    android:id="@+id/amenities_list"
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:layout_below="@id/aminitiesText"
+                    android:layout_marginTop="5dp" >
+
+                    <LinearLayout
+                        android:id="@+id/amenities_layout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal" />
+                </HorizontalScrollView>
+            </RelativeLayout>
+            <!-- For showing  amenties of this project end -->
+
+
+            <!-- For showing  description and specification of this project start -->
+
+            <LinearLayout
+                android:id="@+id/descriptionAndspecification"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/amenties"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/style_layouts"
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dip"
+                android:paddingStart="10dip" >
+
+                <RelativeLayout
+                    android:id="@+id/descriptionLabel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp" >
+
+                    <TextView
+                        android:id="@+id/descriptionLabeltext"
+                        android:layout_width="290dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Description And Specification"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/desc_expand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dip"
+                        android:layout_toRightOf="@id/descriptionLabeltext"
+                        android:src="@drawable/tw_expander_open_01_holo_light" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/descriptionAndspecificationlayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:orientation="vertical"
+                    android:visibility="visible" >
+
+                    <TextView
+                        android:id="@+id/descriptiontext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="A drawable resource is a general concept for a graphic that can be drawn to the 
+                        screen and which you can retrieve with APIs such as getDrawable(int) or apply to another XML resource with attributes such as android:drawable and" />
+
+                    <TextView
+                        android:id="@+id/specification"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="5dp"
+                        android:text="Project Specification"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <View
+                        android:id="@+id/dividerline"
+                        android:layout_width="match_parent"
+                        android:layout_height="1dip" >
+                    </View>
+
+                    <TextView
+                        android:id="@+id/specificationtext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="A drawable resource is a general concept for a graphic that can be drawn to the 
+                        screen and which you can retrieve with APIs such as getDrawable(int) or apply to another XML resource with attributes such as android:drawable and" />
+                </LinearLayout>
+            </LinearLayout>
+            <!-- For showing  description and specification of this project end -->
+
+
+            <!-- For showing  location on map  of this project start -->
+
+
+            <!-- For showing  location on map  of this project  end -->
+
+
+            <!-- For showing  builder info of this project start -->
+
+            <LinearLayout
+                android:id="@+id/builderInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/descriptionAndspecification"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/style_layouts"
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dip"
+                android:paddingStart="10dip" >
+
+                <RelativeLayout
+                    android:id="@+id/builderinfo_label"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp" >
+
+                    <TextView
+                        android:id="@+id/builderinfoLabeltext"
+                        android:layout_width="290dp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"
+                        android:text="Builder Information"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <ImageView
+                        android:id="@+id/builder_expand"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="5dip"
+                        android:layout_toRightOf="@id/builderinfoLabeltext"
+                        android:src="@drawable/tw_expander_open_01_holo_light" />
+                </RelativeLayout>
+
+                <LinearLayout
+                    android:id="@+id/builderinfoLayout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:visibility="visible" >
+
+                    <TextView
+                        android:id="@+id/builderdescriptiontext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="In normal use it is not possible to do this, because fragments are attached with activity, 
+                        and whenever activity is getting killed fragment will also be destroyed and doesn&apos;t exist any more.
+                        It all happened due to mismatch caused by speed of stress test."
+                        android:textSize="16sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/builderlogonName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/builderInfo"
+                android:layout_marginTop="5dip"
+                android:background="@drawable/style_layouts"
+                android:orientation="vertical"
+                android:paddingBottom="5dp"
+                android:paddingEnd="10dip"
+                android:paddingStart="10dip" >
+
+                <ImageView
+                    android:id="@+id/builder_logo"
+                    android:layout_width="50dip"
+                    android:layout_height="50dip"
+                    android:layout_centerVertical="true"
+                    android:src="@drawable/ic_launcher" />
+
+                <LinearLayout
+                    android:id="@+id/buildernameLayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_toRightOf="@id/builder_logo"
+                    android:orientation="vertical" >
+
+                    <TextView
+                        android:id="@+id/buildernametext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="5dip"
+                        android:text="Bhagyyam"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <Button
+                        android:id="@+id/builderurltext"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="In normal use it is not possible"
+                        android:textSize="12sp" />
+                </LinearLayout>
+            </RelativeLayout>
+
+            <!-- For showing  builder info of this project end -->
+        </RelativeLayout>
+    </ScrollView>
+
+</RelativeLayout>

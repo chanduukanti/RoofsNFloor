@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+<!-- 
+    <TextView
+        android:id="@+id/name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:text="RoofandFloors.com"
+        android:textSize="20sp" /> -->
+
+    <Button
+        android:id="@+id/viewProjects"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Projects ListView"
+        android:textSize="20sp" />
+
+    <Button
+        android:id="@+id/viewProjectsonMap"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="Projects MapView"
+        android:textSize="20sp" />
+    
+        <Button
+        android:id="@+id/tabsView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical|center_horizontal"
+        android:text="TabView"
+        android:textSize="20sp" />
+
+</LinearLayout>

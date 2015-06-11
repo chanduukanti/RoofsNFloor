@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.mapslist"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="14"
+        android:targetSdkVersion="19" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+
+    <permission
+        android:name="com.example.mapslist.permission.MAPS_RECEIVE"
+        android:protectionLevel="signature" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/WelcomeTheme" >
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyDkRw9W5XYqSczkO3kZAtncL2bx0tmSJLQ" />
+
+        <activity
+            android:name="com.example.mapslist.FirstActivity"
+            android:label="RoofAndFloors" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+                <activity
+            android:name="com.example.mapslist.RoofnFloorsActivity"
+            android:label="Roof_n_Floors" >
+            <intent-filter>
+                <action android:name="android.intent.action.tabView" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.mapslist.MainActivity"
+            android:label="@string/list_activity"
+            android:parentActivityName="com.example.mapslist.FirstActivity" >
+            <intent-filter>
+                <action android:name="roomandfloors.view.projectList" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.mapslist.MapView"
+            android:label="ProjectDetails"
+            android:parentActivityName="com.example.mapslist.FirstActivity" >
+            <intent-filter>
+                <action android:name="roomandfloors.view.mapView" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.example.mapslist.ProjectDetails"
+            android:label="ProjectDetails"
+            android:parentActivityName="com.example.mapslist.MainActivity" >
+            <intent-filter>
+                <action android:name="roomandfloors.view.projectDetails" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <service
+            android:name=".FetchAddressIntentService"
+            android:exported="false" />
+    </application>
+
+</manifest>
