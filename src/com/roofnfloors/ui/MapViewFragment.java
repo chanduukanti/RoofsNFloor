@@ -3,6 +3,7 @@ package com.roofnfloors.ui;
 import java.util.ArrayList;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -18,7 +19,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.mapslist.R;
+import com.android.roofnfloors.R;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.google.android.gms.maps.CameraUpdate;
@@ -34,14 +35,13 @@ import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.roofnfloors.parser.Project;
 import com.roofnfloors.tasks.ProjectDataFetcherTask;
-import com.roofnfloors.tasks.ProjectDataFetcherTask.CallBack;
-import com.roofnfloors.ui.RoofnFloorsActivity.Project;
+import com.roofnfloors.ui.RoofnFloorsActivity.UIHandler;
 import com.roofnfloors.util.Constants;
 
 public class MapViewFragment extends Fragment implements OnMapClickListener,
-        OnMapLongClickListener, OnMarkerClickListener, OnCameraChangeListener,
-        CallBack {
+        OnMapLongClickListener, OnMarkerClickListener, OnCameraChangeListener {
     private AlertDialog mLocationDisabledMsgDialog;
 
     private LatLng mCurrentLatLng;
@@ -50,14 +50,14 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
     private LocationManager mLocationManager;
     private boolean mIsGpsOn;
     private boolean mIsNetworKOn;
-    private Context mContext = null;
     private boolean isCreateFail = false;
     private float mMapZoomLevel = Constants.DEFAULT_MAP_ZOOM_LEVEL;
+    private ProjectDataFetcherTask mRunningTask;
+    private UIHandler mUiHandler;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        mContext = getActivity();
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
     }
 
     @Override
@@ -81,10 +81,9 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
         if (!isCreateFail) {
             init();
         }
-        if (mGoogleMap != null) {
-            new ProjectDataFetcherTask(this.getActivity(), this, Boolean.TRUE)
-                    .execute(Constants.PROJECT_LIST_URL);
-        }
+        mUiHandler = ((RoofnFloorsActivity) getActivity()).getmUiHandler();
+        mUiHandler.setmMapViewFragment(this);
+        setRetainInstance(true);
     }
 
     private boolean checkGooglePlayServices() {
@@ -103,22 +102,6 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
         return isGooglePlayServicesAvailable;
     }
 
-    public void onDestroy() {
-
-        if (mGoogleMap != null) {
-            mGoogleMap.setOnMapClickListener(null);
-            mGoogleMap.setOnMapLongClickListener(null);
-            mGoogleMap.setOnMarkerClickListener(null);
-            mGoogleMap.setOnCameraChangeListener(null);
-        }
-        if (mGoogleMap != null) {
-            mGoogleMap.clear();
-            mGoogleMap = null;
-        }
-        System.gc();
-        super.onDestroy();
-    }
-
     @SuppressWarnings("unused")
     private boolean checkSetting() {
 
@@ -126,7 +109,7 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
 
         StringBuilder dialogString = new StringBuilder();
 
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext
+        ConnectivityManager connectivityManager = (ConnectivityManager) getActivity()
                 .getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager
                 .getActiveNetworkInfo();
@@ -158,7 +141,7 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
     }
 
     private void showDialog() {
-        AlertDialog.Builder ab = new AlertDialog.Builder(mContext);
+        AlertDialog.Builder ab = new AlertDialog.Builder(getActivity());
         ab.setTitle("GPS diabled");
         ab.setMessage("GPS diabled");
         ab.setPositiveButton("OK", new OnClickListener() {
@@ -229,10 +212,10 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
         // application
         @SuppressWarnings("deprecation")
         boolean gpsEnabled = Settings.Secure.isLocationProviderEnabled(
-                mContext.getContentResolver(), LocationManager.GPS_PROVIDER);
+                getActivity().getContentResolver(), LocationManager.GPS_PROVIDER);
         @SuppressWarnings("deprecation")
         boolean networkEnabled = Settings.Secure
-                .isLocationProviderEnabled(mContext.getContentResolver(),
+                .isLocationProviderEnabled(getActivity().getContentResolver(),
                         LocationManager.NETWORK_PROVIDER);
 
         if (!gpsEnabled && !networkEnabled) {
@@ -253,11 +236,12 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
     @Override
     public boolean onMarkerClick(Marker marker) {
         LatLng latlong = marker.getPosition();
-        Project proj = RoofnFloorsActivity.myProjectsMap.get(latlong);
-        Intent in = new Intent("roomandfloors.view.projectDetails");
-        in.putExtra("projectId", proj.id);
-        in.putExtra("Idurl", Constants.PROJECT_LIST_URL + proj.id);
-        in.putExtra("ProjectName", proj.projectName);
+        Project proj = ((RoofnFloorsActivity) getActivity()).getMyProjectsMap()
+                .get(latlong);
+        Intent in = new Intent(getActivity(), ProjectDetailsActivity.class);
+        in.putExtra("projectId", proj.getmProjectid());
+        in.putExtra("Idurl", Constants.PROJECT_LIST_URL + proj.getmProjectid());
+        in.putExtra("ProjectName", proj.getmProjectName());
         startActivity(in);
         return true;
     }
@@ -273,7 +257,7 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
     }
 
     private void setLatLngAndMarker(Project p) {
-        mCurrentLatLng = new LatLng(p.latitude, p.longitude);
+        mCurrentLatLng = new LatLng(p.getmLatitude(), p.getmLongitude());
         if (mGoogleMap != null) {
             CameraUpdate cu = CameraUpdateFactory.newLatLngZoom(mCurrentLatLng,
                     mMapZoomLevel);
@@ -283,7 +267,7 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
             return;
         }
         MarkerOptions mo = new MarkerOptions().position(mCurrentLatLng).title(
-                p.projectName);
+                p.getmProjectName());
 
         if (mo != null && mGoogleMap != null)
             mCurrentMarker = mGoogleMap.addMarker(mo);
@@ -294,16 +278,16 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
 
     }
 
-    @Override
-    public void onProjectListTaskCompleted(ArrayList<Project> projList) {
+    public void onProjectListDataReceived(ArrayList<Project> projList) {
         if (projList != null) {
             for (int i = 0; i < projList.size(); i++) {
                 setLatLngAndMarker(projList.get(i));
                 // Moving CameraPosition to last clicked position
                 if (mGoogleMap != null) {
                     mGoogleMap.moveCamera(CameraUpdateFactory
-                            .newLatLng(new LatLng(projList.get(i).latitude,
-                                    projList.get(i).longitude)));
+                            .newLatLng(new LatLng(projList.get(i)
+                                    .getmLatitude(), projList.get(i)
+                                    .getmLongitude())));
                     // Setting the zoom level in the map on last position is
                     // clicked
                     mGoogleMap.animateCamera(CameraUpdateFactory
@@ -313,8 +297,27 @@ public class MapViewFragment extends Fragment implements OnMapClickListener,
         }
     }
 
-    @Override
-    public void onProjectDetailsTaskCompleted(ProjectInfo pinfo) {
+    private void cleanUp() {
+        if (mRunningTask != null) {
+            mRunningTask.cancel(Boolean.TRUE);
+            mRunningTask = null;
+        }
+        if (mGoogleMap != null) {
+            mGoogleMap.setOnMapClickListener(null);
+            mGoogleMap.setOnMapLongClickListener(null);
+            mGoogleMap.setOnMarkerClickListener(null);
+            mGoogleMap.setOnCameraChangeListener(null);
+        }
+        if (mGoogleMap != null) {
+            mGoogleMap.clear();
+            mGoogleMap = null;
+        }
+        System.gc();
+    }
 
+    @Override
+    public void onStop() {
+        cleanUp();
+        super.onStop();
     }
 }

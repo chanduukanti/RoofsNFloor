@@ -6,10 +6,12 @@ import java.util.List;
 
 import android.annotation.SuppressLint;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,25 +21,28 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.example.mapslist.R;
+import com.android.roofnfloors.R;
 import com.google.android.gms.maps.model.LatLng;
-import com.roofnfloors.tasks.ProjectDataFetcherTask;
-import com.roofnfloors.tasks.ProjectDataFetcherTask.CallBack;
-import com.roofnfloors.ui.RoofnFloorsActivity.Project;
-import com.roofnfloors.util.Constants;
+import com.roofnfloors.parser.Project;
+import com.roofnfloors.ui.RoofnFloorsActivity.UIHandler;
 
-public class ListViewFragment extends Fragment implements CallBack {
+public class ListViewFragment extends Fragment {
+    private static final String TAG = ListViewFragment.class.getCanonicalName();
     private Context mContext = null;
     private ListView lv;
     private MySimpleArrayAdapter adapter;
     public static HashMap<LatLng, Project> myProjectsMap = new HashMap<LatLng, Project>();
-    private ProjectDataFetcherTask mDownloadProjectListTask;
+    private UIHandler mUiHandler;
+
+    @Override
+    public void onAttach(Activity activity) {
+        mContext = activity;
+        super.onAttach(activity);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mContext = getActivity();
-
     }
 
     @Override
@@ -47,15 +52,7 @@ public class ListViewFragment extends Fragment implements CallBack {
         View rootView = inflater.inflate(R.layout.listview_fragment, container,
                 false);
         lv = (ListView) rootView.findViewById(R.id.projectList);
-        init();
         return rootView;
-    }
-
-    private void init() {
-
-        mDownloadProjectListTask = new ProjectDataFetcherTask(
-                this.getActivity(), this, Boolean.TRUE);
-        mDownloadProjectListTask.execute(Constants.PROJECT_LIST_URL);
     }
 
     @Override
@@ -74,12 +71,13 @@ public class ListViewFragment extends Fragment implements CallBack {
                 Project p = (Project) adapter.getItemAtPosition(position);
                 Intent in = new Intent(ListViewFragment.this.getActivity(),
                         ProjectDetailsActivity.class);
-                in.putExtra("projectId", p.id);
-                in.putExtra("Idurl", Constants.PROJECT_LIST_URL + p.id);
-                in.putExtra("ProjectName", p.projectName);
+                in.putExtra("projectId", p.getmProjectid());
+                in.putExtra("ProjectName", p.getmProjectName());
                 startActivity(in);
             }
         });
+        mUiHandler = ((RoofnFloorsActivity) getActivity()).getmUiHandler();
+        mUiHandler.setmListViewFragment(this);
     }
 
     @Override
@@ -90,10 +88,8 @@ public class ListViewFragment extends Fragment implements CallBack {
 
     @Override
     public void onStop() {
+        cleanUp();
         super.onStop();
-        if (null != mDownloadProjectListTask)
-            mDownloadProjectListTask.cancel(true);
-        mDownloadProjectListTask = null;
     }
 
     public class MySimpleArrayAdapter extends ArrayAdapter<Project> {
@@ -114,7 +110,7 @@ public class ListViewFragment extends Fragment implements CallBack {
             View rowView = inflater.inflate(R.layout.project_list_item, parent,
                     false);
             TextView pname = (TextView) rowView.findViewById(R.id.projectName);
-            pname.setText(values.get(position).projectName);
+            pname.setText(values.get(position).getmProjectName());
 
             return rowView;
         }
@@ -128,17 +124,17 @@ public class ListViewFragment extends Fragment implements CallBack {
         this.lv = lv;
     }
 
-    @Override
-    public void onProjectListTaskCompleted(ArrayList<Project> plist) {
-        if (plist != null) {
-            adapter = new MySimpleArrayAdapter(mContext, plist);
-            if (lv != null)
-                lv.setAdapter(adapter);
-        }
+    private void cleanUp() {
+        mContext = null;
+        lv = null;
+        adapter = null;
+        myProjectsMap = null;
     }
 
-    @Override
-    public void onProjectDetailsTaskCompleted(ProjectInfo pinfo) {
-
+    public void onProjectListDataReceived(final ArrayList<Project> plist) {
+        Log.d("Test", TAG + ":onProjectListDataReceived");
+        adapter = new MySimpleArrayAdapter(mContext, plist);
+        if (lv != null)
+            lv.setAdapter(adapter);
     }
 }

@@ -7,79 +7,75 @@ import java.util.WeakHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import android.content.Context;
 import android.graphics.Bitmap;
-import android.os.Handler;
-import android.widget.ImageView;
 
-import com.example.mapslist.R;
 import com.roofnfloors.cache.FileCache;
 import com.roofnfloors.cache.MemoryCache;
+import com.roofnfloors.net.ServerDataFetcher;
+import com.roofnfloors.ui.ProjectDetailsActivity;
 import com.roofnfloors.util.Utility;
 
 public class ImageLoader {
-    private Context mContext;
-    private Handler mHandler;
+    private ProjectDetailsActivity mCallBack;
+    private int mImagePosition;
 
-    private Map<ImageView, String> imageViews = Collections
-            .synchronizedMap(new WeakHashMap<ImageView, String>());
-    private ExecutorService executorService;
+    private static class ImageLoaderHolder {
+        private static final ImageLoader INSTANCE = new ImageLoader();
 
-    public ImageLoader(Context context, Handler handler) {
-        mContext = context;
-        mHandler = handler;
-        executorService = Executors.newFixedThreadPool(5);
+        private static ImageLoader getImageLoader(
+                ProjectDetailsActivity activity) {
+            INSTANCE.mCallBack = activity;
+            INSTANCE.mExecutorService = Executors.newFixedThreadPool(5);
+            return INSTANCE;
+        }
+    }
+
+    public static ImageLoader getInstance(ProjectDetailsActivity activity) {
+        return ImageLoaderHolder.getImageLoader(activity);
+    }
+
+    public interface ImageLoaderCallBack {
+        public void onImageLoadingCompleted(Bitmap map, int pos);
+    }
+
+    private Map<String, Bitmap> mImagesMap = Collections
+            .synchronizedMap(new WeakHashMap<String, Bitmap>());
+
+    private ExecutorService mExecutorService;
+
+    public ImageLoader() {
     }
 
     public void stopImageLoader() {
-        if (null != executorService) {
-            executorService.shutdown();
-            executorService = null;
+        if (null != mExecutorService) {
+            mExecutorService.shutdown();
+            mExecutorService = null;
+            mImagesMap.clear();
         }
     }
 
-    private final int view_pager_default_image = R.drawable.roofnfloor_default;
-
-    public void displayImage(String url, final ImageView imageView) {
-        imageViews.put(imageView, url);
-        final Bitmap bitmap = MemoryCache.getInstance().get(url);
-        if (bitmap != null) {
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    imageView.setImageBitmap(bitmap);
-
-                }
-            });
+    public void displayImage(String url) {
+        Bitmap map = mImagesMap.get(url);
+        if (map != null) {
+            mCallBack.onImageLoadingCompleted(map, mImagePosition);
         } else {
-            queuePhoto(url, imageView);
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    imageView.setImageResource(view_pager_default_image);
-
-                }
-            });
-            // Activity a = (Activity) imageView.getContext();
-            // a.runOnUiThread(new Runnable() {
-            //
-            // @Override
-            // public void run() {
-            // imageView.setImageResource(stub_id);
-            // }
-            // });
+            map = MemoryCache.getInstance().get(url);
+            if (map != null) {
+                mImagesMap.put(url, map);
+                mCallBack.onImageLoadingCompleted(map, mImagePosition);
+            } else {
+                addtoDownloadImageQueue(url);
+            }
         }
     }
 
-    private void queuePhoto(String url, ImageView imageView) {
-        PhotoToLoad p = new PhotoToLoad(url, imageView);
-        executorService.submit(new PhotosLoader(p));
+    private void addtoDownloadImageQueue(String url) {
+        PhotoToLoad p = new PhotoToLoad(url, mImagePosition);
+        mExecutorService.submit(new PhotosLoader(p));
     }
 
     private Bitmap getBitmap(String url) {
-        File f = FileCache.getInstance(mContext).getFile(url);
+        File f = FileCache.getInstance(mCallBack).getFile(url);
 
         // from SD cache
         Bitmap b = Utility.decodeFile(f);
@@ -88,7 +84,7 @@ public class ImageLoader {
 
         // from web
         try {
-            return Utility.downloadImage(url, mContext);
+            return ServerDataFetcher.downloadImage(url, mCallBack);
         } catch (Throwable ex) {
             ex.printStackTrace();
             if (ex instanceof OutOfMemoryError)
@@ -100,11 +96,11 @@ public class ImageLoader {
     // Task for the queue
     private class PhotoToLoad {
         public String url;
-        public ImageView imageView;
+        public int position;
 
-        public PhotoToLoad(String u, ImageView i) {
+        public PhotoToLoad(String u, int pos) {
             url = u;
-            imageView = i;
+            position = pos;
         }
     }
 
@@ -117,54 +113,26 @@ public class ImageLoader {
 
         @Override
         public void run() {
-            if (imageViewReused(photoToLoad))
-                return;
             Bitmap bmp = getBitmap(photoToLoad.url);
-            MemoryCache.getInstance().put(photoToLoad.url, bmp);
-            if (imageViewReused(photoToLoad))
-                return;
-            BitmapDisplayer bd = new BitmapDisplayer(bmp, photoToLoad);
-            mHandler.post(bd);
-            // Activity a = (Activity) photoToLoad.imageView.getContext();
-            // a.runOnUiThread(bd);
-        }
-    }
-
-    boolean imageViewReused(PhotoToLoad photoToLoad) {
-        String tag = imageViews.get(photoToLoad.imageView);
-        if (tag == null || !tag.equals(photoToLoad.url))
-            return true;
-        return false;
-    }
-
-    // Used to display bitmap in the UI thread
-    private class BitmapDisplayer implements Runnable {
-        Bitmap bitmap;
-        PhotoToLoad photoToLoad;
-
-        public BitmapDisplayer(Bitmap b, PhotoToLoad p) {
-            bitmap = b;
-            photoToLoad = p;
-        }
-
-        public void run() {
-            if (imageViewReused(photoToLoad))
-                return;
-            if (bitmap != null) {
-                // photoToLoad.imageView.setImageBitmap(null);
-                photoToLoad.imageView.setImageBitmap(bitmap);
-            } else {
-                photoToLoad.imageView.setImageResource(view_pager_default_image);
+            if (bmp != null) {
+                mCallBack.onImageLoadingCompleted(bmp, photoToLoad.position);
+                mImagesMap.put(photoToLoad.url, bmp);
+                MemoryCache.getInstance().put(photoToLoad.url, bmp);
             }
         }
     }
 
     public void clearCache() {
         MemoryCache.getInstance().clear();
-        FileCache.getInstance(mContext).clear();
+        FileCache.getInstance(mCallBack).clear();
     }
 
-    public static FileCache getFileCache(Context context) {
-        return FileCache.getInstance(context);
+    public int getmImagePosition() {
+        return mImagePosition;
     }
+
+    public void setmImagePosition(int mImagePosition) {
+        this.mImagePosition = mImagePosition;
+    }
+
 }

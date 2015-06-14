@@ -54,4 +54,8 @@ public class FileCache {
         for (File f : files)
             f.delete();
     }
+
+    public static FileCache getFileCache(Context context) {
+        return getInstance(context);
+    }
 }

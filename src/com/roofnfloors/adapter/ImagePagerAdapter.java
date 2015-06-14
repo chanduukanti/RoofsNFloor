@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
-import com.example.mapslist.R;
+import com.android.roofnfloors.R;
 
 public class ImagePagerAdapter extends PagerAdapter {
 

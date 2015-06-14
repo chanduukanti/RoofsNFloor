@@ -5,4 +5,12 @@ public interface Constants {
     public static final String CACHE_DIR_NAME = "images_cache";
     public static final int DEFAULT_MAP_ZOOM_LEVEL = 15;
     public static final String[] TABS = { "List View ", "Map View" };
+
+    public enum FETCH_SERVER_DATA_TYPE {
+        PROJECT_LIST, PROJECT_DETAIL
+    }
+
+    public enum DATA_LOAD_TYPE {
+        SERVER, DATABASE
+    }
 }
